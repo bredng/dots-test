@@ -1,4 +1,6 @@
-import cv2
+"""
+Helper functions for the main script
+"""
 
 def calculate_ave_v(x, x0, t):
     return (x-x0)/t

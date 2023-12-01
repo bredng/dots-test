@@ -53,7 +53,7 @@ hMin = sMin = vMin = hMax = sMax = vMax = 0
 
 output = ROI_img
 
-print("")
+print(f"\nAdjust the sliders until only the object of interest is visible, then press ENTER button!")
 while True:
     # Retrieve current trackbar positions
     hMin = cv2.getTrackbarPos("HMin", window_name)
@@ -76,12 +76,12 @@ while True:
     # Display output image
     cv2.imshow(window_name, output)
 
+    # Wait for 'enter' to escape
     if cv2.waitKey(30) & 0xFF == 13:
         break
 
+# Clear windows
 cv2.destroyAllWindows()
-
-# succ, thres = cv2.threshold(gray_ROI, 127, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
 contours, hierarchy = cv2.findContours(mask, 1, 2)
 
@@ -95,14 +95,14 @@ cY = int(M["m01"] / M["m00"]) + y
 
 # # Convert the first frame to grayscale
 # previous = cv2.cvtColor(first_frame, cv2.COLOR_BGR2GRAY)
-# p0 = cv2.goodFeaturesToTrack(previous, mask = None, **feature_params)
+# p0 = np.float32([(cX, cY)]).reshape(-1, 1)
 
 # while True:
 #     frame_start = time.time()
 #     succ, second_frame = cap.read()
 #     next = cv2.cvtColor(second_frame, cv2.COLOR_BGR2GRAY)
 
-#     pts0, st, err = cv2.calcOpticalFlowPyrLK(previous, next, )
+#     pts0, st, err = cv2.calcOpticalFlowPyrLK(previous, next, p0, None, **lk_params)
 
 #     if not succ:
 #         print("Couldn't retrieve frame, ending...")
