@@ -18,12 +18,14 @@ def draw_box(frame, bbox, font):
     cv2.rectangle(frame, (x, y), ((x + w), (y + h)), (255, 0, 255), 3, 3 )
     cv2.putText(frame, "Tracking", (100, 75), font, 0.7, (0, 255, 0), 2)
 
+# Function to calculate the centroid of a bounding box
 def get_centre(bbox):
     x, y, w, h = int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])
     Cx = x+w/2
     Cy = y+h/2
     return (int(Cx), int(Cy))
 
+# Function to calculate the vector of 2 points
 def calculate_vector(p0, p1):
     Vx = p1[0] - p0[0]
     Vy = p0[1] - p1[1]
