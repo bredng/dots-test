@@ -3,6 +3,7 @@ Tracks an object by selecting a region of interest with sparse optical flow
 """
 
 import numpy as np
+import sys
 import cv2 
 from helpers import *
 
@@ -145,3 +146,6 @@ while True:
   
     previous = next.copy() 
     p0 = good_new.reshape(-1, 1, 2) 
+
+cv2.destroyAllWindows()
+sys.exit()

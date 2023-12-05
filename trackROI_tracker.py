@@ -2,7 +2,14 @@
 Tracks an object by selecting a region of interest with OpenCV trackers
 """
 import cv2
+import sys
 import numpy as np
+from helpers import *
+
+
+# Setting parameters
+font = cv2.FONT_HERSHEY_SIMPLEX
+all_points = []
 
 # Prompt user to select tracker type
 while True:
@@ -45,7 +52,7 @@ while True:
         print("Invalid input, please select a tracker from 1-7")
 
 # Retrieve video feed
-cap = cv2.VideoCapture("testvid.mp4")
+cap = cv2.VideoCapture("testvid1.mp4")
 success, frame = cap.read()
 
 # Prompt user to select region of interest
@@ -53,13 +60,17 @@ bbox = cv2.selectROI("Select region of interest",frame, False)
 # Initialise tracker with chosen region of interest
 tracker.init(frame, bbox)
 
-# Function to draw box
-def draw_box(frame, bbox):
-    x, y, w, h = int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])
-    cv2.rectangle(frame, (x, y), ((x + w), (y + h)), (255, 0, 255), 3, 3 )
-    cv2.putText(frame, "Tracking", (100, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+# Update all points array with first point
+all_points.append(get_centre(bbox))
 
+# Clear windows
+cv2.destroyAllWindows()
 
+# Calculate time between each frame
+video_fps = cap.get(cv2.CAP_PROP_FPS)
+frame_time = 1/video_fps
+
+# Loop through the remaining frames
 while True:
     timer = cv2.getTickCount()
     success, frame = cap.read()
@@ -67,21 +78,38 @@ while True:
 
     # If object is successfully being tracked, update box as normal
     if success:
-        draw_box(frame, bbox)
+        draw_box(frame, bbox, font)
+        new_point = get_centre(bbox)
+        magnitude_point = (new_point[0] + 30, new_point[1] - 30)
+        angle_point = (new_point[0] + 30, new_point[1] - 60)
+        velocity_point = (new_point[0] + 30, new_point[1] - 90)
+        
+        # Draw vector
+        v_magnitude, v_angle = calculate_vector(all_points[-1], new_point)
+        velocity = v_magnitude/frame_time
+        cv2.arrowedLine(frame, all_points[-1], new_point, (255, 0, 0), 2)
+
+        cv2.putText(frame, "Magnitude:" + str(v_magnitude), magnitude_point, font, 0.7, (255, 0, 0), 2)
+        cv2.putText(frame, "Angle:" + str(v_angle), angle_point, font, 0.7, (255, 0, 0), 2)
+        cv2.putText(frame, "Velocity:" + str(velocity), velocity_point, font, 0.7, (255, 0, 0), 2)
+        all_points.append(new_point)
     else:
         # Otherwise update text to indicate object has been lost 
-        cv2.putText(frame, "Lost", (100, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+        cv2.putText(frame, "Lost", (100, 75), font, 0.7, (0, 0, 255), 2)
 
     # Draw rectangle to contain status and FPS
     cv2.rectangle(frame, (15, 15), (200, 90), (255, 0, 255), 2)
-    cv2.putText(frame, "FPS:", (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 255), 2)
-    cv2.putText(frame, "Status:", (20, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 255), 2)
+    cv2.putText(frame, "FPS:", (20, 40), font, 0.7, (255, 0, 255), 2)
+    cv2.putText(frame, "Status:", (20, 75), font, 0.7, (255, 0, 255), 2)
 
     # Calculate FPS and display
     fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
-    cv2.putText(frame, str(int(fps)), (75, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (20, 20, 230), 2)
+    cv2.putText(frame, str(int(fps)), (75, 40), font, 0.7, (20, 20, 230), 2)
 
     # Display result
     cv2.imshow("Result", frame)
     if cv2.waitKey(30) & 0xff == 13:
        break
+
+cv2.destroyAllWindows()
+sys.exit()
