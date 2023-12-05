@@ -1,5 +1,5 @@
 """
-Helper functions for the main script
+Helper functions for other scripts
 """
 
 def calculate_ave_v(x, x0, t):
