@@ -60,9 +60,10 @@ cap = cv2.VideoCapture("testvid.mp4")
 success, frame = cap.read()
 
 # Prompt user to select region of interest
-bbox = cv2.selectROI("Select region of interest", frame, fromCenter=False, showCrosshair=False)
-# Initialise tracker with chosen region of interest and add to multi-tracker object
-trackers.add(create_tracker(tracker), frame, bbox)
+boxes = cv2.selectROIs("Select regions of interest", frame, fromCenter=False, showCrosshair=False)
+# Initialise tracker with chosen regions of interest and add to multi-tracker object
+for box in boxes:
+    trackers.add(create_tracker(tracker), frame, box)
 
 # Clear windows
 cv2.destroyAllWindows()
@@ -86,10 +87,12 @@ while True:
 
     # Add a new tracker 
     if key == s_key:
+        cv2.destroyAllWindows()
         # Prompt user to select region of interest
-        bbox = cv2.selectROI("Select region of interest", frame, fromCenter=False, showCrosshair=False)
+        boxes = cv2.selectROIs("Select regions of interest", frame, fromCenter=False, showCrosshair=False)
         # Initialise tracker with chosen region of interest and add to multi-tracker object
-        trackers.add(create_tracker(tracker), frame, bbox)
+        for box in boxes:
+            trackers.add(create_tracker(tracker), frame, box)
         cv2.destroyAllWindows()
 
     # Display result
