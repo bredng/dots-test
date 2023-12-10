@@ -10,6 +10,7 @@ from helpers import *
 font = cv2.FONT_HERSHEY_SIMPLEX
 all_points = []
 escape_key = 27
+s_key = 115
 
 # Prompt user to select tracker type
 while True:
@@ -26,25 +27,25 @@ while True:
 
         # Initialise tracker based on selected tracker type
         if selection == 1:
-            tracker = cv2.legacy.TrackerBoosting_create()
+            tracker = "boosting"
             break
         elif selection == 2:
-            tracker = cv2.legacy.TrackerMIL_create()
+            tracker = "mil"
             break
         elif selection == 3:
-            tracker = cv2.legacy.TrackerKCF_create()
+            tracker = "kcf"
             break
         elif selection == 4:
-            tracker = cv2.legacy.TrackerTLD_create()
+            tracker = "tld"
             break
         elif selection == 5:
-            tracker = cv2.legacy.TrackerMedianFlow()
+            tracker = "medianflow"
             break
         elif selection == 6:
-            tracker = cv2.legacy.TrackerCSRT_create()
+            tracker = "csrt"
             break
         elif selection == 7:
-            tracker = cv2.legacy.TrackerMOSSE_create()
+            tracker = "mosse"
             break
         else:
             print("Invalid input, please select a tracker from 1-7")
@@ -61,10 +62,10 @@ success, frame = cap.read()
 # Prompt user to select region of interest
 bbox = cv2.selectROI("Select region of interest", frame, fromCenter=False, showCrosshair=False)
 # Initialise tracker with chosen region of interest and add to multi-tracker object
-trackers.add(tracker, frame, bbox)
+trackers.add(create_tracker(tracker), frame, bbox)
 
 # Clear windows
-cv2.destroyAllWindows
+cv2.destroyAllWindows()
 
 # Loop through the remaining frames
 while True:
@@ -79,10 +80,21 @@ while True:
     for box in boxes:
         x, y, w, h = [int(dimension) for dimension in box]
         cv2.rectangle(frame, (x, y), ((x + w), (y + h)), (255, 0, 255), 3, 3)
+    
+    # Read user input
+    key = cv2.waitKey(30) & 0xff
+
+    # Add a new tracker 
+    if key == s_key:
+        # Prompt user to select region of interest
+        bbox = cv2.selectROI("Select region of interest", frame, fromCenter=False, showCrosshair=False)
+        # Initialise tracker with chosen region of interest and add to multi-tracker object
+        trackers.add(create_tracker(tracker), frame, bbox)
+        cv2.destroyAllWindows()
 
     # Display result
     cv2.imshow("Result", frame)
-    if cv2.waitKey(30) & 0xff == escape_key:
+    if key == escape_key:
        break
 
 cv2.destroyAllWindows()
