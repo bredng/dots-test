@@ -10,6 +10,7 @@ from helpers import *
 # Setting parameters
 font = cv2.FONT_HERSHEY_SIMPLEX
 all_points = []
+escape_key = 27
 
 # Prompt user to select tracker type
 while True:
@@ -52,11 +53,11 @@ while True:
         print("Invalid input, please select a tracker from 1-7")
 
 # Retrieve video feed
-cap = cv2.VideoCapture("testvid1.mp4")
+cap = cv2.VideoCapture("testvid.mp4")
 success, frame = cap.read()
 
 # Prompt user to select region of interest
-bbox = cv2.selectROI("Select region of interest",frame, False)
+bbox = cv2.selectROI("Select region of interest",frame, fromCenter=False, showCrosshair=False)
 # Initialise tracker with chosen region of interest
 tracker.init(frame, bbox)
 
@@ -75,6 +76,10 @@ while True:
     timer = cv2.getTickCount()
     success, frame = cap.read()
     success, bbox = tracker.update(frame)
+
+    # End of video, break out of loop
+    if frame is None:
+        break
 
     # If object is successfully being tracked, update box as normal
     if success:
@@ -108,7 +113,7 @@ while True:
 
     # Display result
     cv2.imshow("Result", frame)
-    if cv2.waitKey(30) & 0xff == 13:
+    if cv2.waitKey(30) & 0xff == escape_key:
        break
 
 cv2.destroyAllWindows()

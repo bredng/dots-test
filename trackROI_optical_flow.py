@@ -26,7 +26,7 @@ cap = cv2.VideoCapture("testvid1.mp4")
 succ, first_frame = cap.read()
 
 # Prompt user to select region of interest
-x, y, w, h = cv2.selectROI("Select region of interest", first_frame, True, False)
+x, y, w, h = cv2.selectROI("Select region of interest", first_frame, fromCenter=False, showCrosshair=False)
 
 ROI_img = get_subimage(first_frame, x, y, w, h)
 
