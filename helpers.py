@@ -66,6 +66,8 @@ def calculate_vector(p0, p1):
     magnitude = np.sqrt(Vx**2 + Vy**2)
     angle_r = np.arctan2(Vy, Vx)
     angle_d = angle_r*(180/np.pi)
+    if angle_d < 0:
+        angle_d += 360
     return magnitude, angle_d
     
 def create_tracker(tracker_type: str):

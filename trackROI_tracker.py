@@ -53,11 +53,11 @@ while True:
         print("Invalid input, please select a tracker from 1-7")
 
 # Retrieve video feed
-cap = cv2.VideoCapture("testvid.mp4")
+cap = cv2.VideoCapture("testvid2.mp4")
 success, frame = cap.read()
 
 # Prompt user to select region of interest
-bbox = cv2.selectROI("Select region of interest",frame, fromCenter=False, showCrosshair=False)
+bbox = cv2.selectROI("Select region of interest", frame, fromCenter=False, showCrosshair=False)
 # Initialise tracker with chosen region of interest
 tracker.init(frame, bbox)
 
