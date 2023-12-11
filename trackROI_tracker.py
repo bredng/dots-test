@@ -85,18 +85,18 @@ while True:
     if success:
         draw_box(frame, bbox, font)
         new_point = get_centre(bbox)
-        magnitude_point = (new_point[0] + 30, new_point[1] - 30)
-        angle_point = (new_point[0] + 30, new_point[1] - 60)
-        velocity_point = (new_point[0] + 30, new_point[1] - 90)
+        magnitude_text = (new_point[0] + 30, new_point[1] - 30)
+        angle_text = (new_point[0] + 30, new_point[1] - 60)
+        velocity_text = (new_point[0] + 30, new_point[1] - 90)
         
         # Draw vector
         v_magnitude, v_angle = calculate_vector(all_points[-1], new_point)
         velocity = v_magnitude/frame_time
         cv2.arrowedLine(frame, all_points[-1], new_point, (255, 0, 0), 2)
 
-        cv2.putText(frame, "Magnitude:" + str(v_magnitude), magnitude_point, font, 0.7, (255, 0, 0), 2)
-        cv2.putText(frame, "Angle:" + str(v_angle), angle_point, font, 0.7, (255, 0, 0), 2)
-        cv2.putText(frame, "Velocity:" + str(velocity), velocity_point, font, 0.7, (255, 0, 0), 2)
+        cv2.putText(frame, "Magnitude:" + str(v_magnitude), magnitude_text, font, 0.7, (255, 0, 0), 2)
+        cv2.putText(frame, "Angle:" + str(v_angle), angle_text, font, 0.7, (255, 0, 0), 2)
+        cv2.putText(frame, "Velocity:" + str(velocity), velocity_text, font, 0.7, (255, 0, 0), 2)
         all_points.append(new_point)
     else:
         # Otherwise update text to indicate object has been lost 
