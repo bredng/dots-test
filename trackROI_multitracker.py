@@ -56,7 +56,7 @@ while True:
 trackers = cv2.legacy.MultiTracker_create()
 
 # Retrieve video feed
-cap = cv2.VideoCapture("testmulti.mp4")
+cap = cv2.VideoCapture("testvid1.mp4")
 success, frame = cap.read()
 
 # Prompt user to select region of interest
@@ -78,11 +78,19 @@ while True:
     # End of video, break out of loop
     if frame is None:
         break
+    
+    if success:
+        # Update every bounding box in boxes
+        for box in boxes:
+            draw_box(frame, box, font)
+            cv2.putText(frame, "Tracking", (100, 40), font, 0.7, (0, 255, 0), 2)
+    else:
+        # Otherwise update text to indicate object has been lost 
+        cv2.putText(frame, "Lost", (100, 40), font, 0.7, (0, 0, 255), 2)
 
-    # Update every bounding box in boxes
-    for box in boxes:
-        x, y, w, h = [int(dimension) for dimension in box]
-        cv2.rectangle(frame, (x, y), ((x + w), (y + h)), (255, 0, 255), 3, 3)
+    # Draw rectangle to contain status info
+    cv2.rectangle(frame, (15, 15), (230, 50), (255, 0, 255), 2)
+    cv2.putText(frame, "Status:", (20, 40), font, 0.7, (255, 0, 255), 2)
     
     # Read user input
     key = cv2.waitKey(30) & 0xff

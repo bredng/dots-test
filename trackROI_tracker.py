@@ -92,17 +92,19 @@ while True:
         velocity = v_magnitude/frame_time
         cv2.arrowedLine(frame, all_points[-1], new_point, (255, 0, 0), 2)
 
-        # cv2.putText(frame, str(v_magnitude), (100, 40), font, 0.7, (255, 0, 0), 2)
-        # cv2.putText(frame, str(v_angle), (100, 75), font, 0.7, (255, 0, 0), 2)
+        # Show vector information
+        cv2.putText(frame, str(round(v_magnitude, 3)), (140, 40), font, 0.7, (255, 0, 0), 2)
+        cv2.putText(frame, str(round(v_angle, 3)), (100, 75), font, 0.7, (255, 0, 0), 2)
+        cv2.putText(frame, "Tracking", (100, 110), font, 0.7, (0, 255, 0), 2)
         all_points.append(new_point)
     else:
         # Otherwise update text to indicate object has been lost 
-        cv2.putText(frame, "Lost", (100, 75), font, 0.7, (0, 0, 255), 2)
+        cv2.putText(frame, "Lost", (100, 110), font, 0.7, (0, 0, 255), 2)
 
-    # Draw rectangle to contain status and FPS
+    # Draw rectangle to contain status and vector information
     cv2.rectangle(frame, (15, 15), (230, 125), (255, 0, 255), 2)
-    cv2.putText(frame, "Magnitude: " + str(round(v_magnitude, 3)), (20, 40), font, 0.7, (255, 0, 255), 2)
-    cv2.putText(frame, "Angle: " + str(round(v_angle, 3)), (20, 75), font, 0.7, (255, 0, 255), 2)
+    cv2.putText(frame, "Magnitude:", (20, 40), font, 0.7, (255, 0, 255), 2)
+    cv2.putText(frame, "Angle:", (20, 75), font, 0.7, (255, 0, 255), 2)
     cv2.putText(frame, "Status:", (20, 110), font, 0.7, (255, 0, 255), 2)
 
     # Display result

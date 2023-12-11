@@ -39,8 +39,7 @@ def draw_box(frame, bbox, font) -> None:
     """
     x, y, w, h = int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])
     cv2.rectangle(frame, (x, y), ((x + w), (y + h)), (255, 0, 255), 3, 3 )
-    cv2.putText(frame, "Tracking", (100, 110), font, 0.7, (0, 255, 0), 2)
-
+    
 def get_centre(bbox):
     """
     Calculates and returns the centre coordinates/centroid of a bounding box.
