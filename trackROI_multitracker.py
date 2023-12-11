@@ -56,10 +56,12 @@ while True:
 trackers = cv2.legacy.MultiTracker_create()
 
 # Retrieve video feed
-cap = cv2.VideoCapture("testvid.mp4")
+cap = cv2.VideoCapture("testmulti.mp4")
 success, frame = cap.read()
 
 # Prompt user to select region of interest
+cv2.namedWindow("Select regions of interest", cv2.WINDOW_NORMAL)
+cv2.resizeWindow("Select regions of interest", 960, 540)
 boxes = cv2.selectROIs("Select regions of interest", frame, fromCenter=False, showCrosshair=False)
 # Initialise tracker with chosen regions of interest and add to multi-tracker object
 for box in boxes:

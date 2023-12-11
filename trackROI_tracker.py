@@ -57,6 +57,8 @@ cap = cv2.VideoCapture("testvid2.mp4")
 success, frame = cap.read()
 
 # Prompt user to select region of interest
+cv2.namedWindow("Select region of interest", cv2.WINDOW_NORMAL)
+cv2.resizeWindow("Select region of interest", 960, 540)
 bbox = cv2.selectROI("Select region of interest", frame, fromCenter=False, showCrosshair=False)
 # Initialise tracker with chosen region of interest
 tracker.init(frame, bbox)
@@ -73,7 +75,6 @@ frame_time = 1/video_fps
 
 # Loop through the remaining frames
 while True:
-    timer = cv2.getTickCount()
     success, frame = cap.read()
     success, bbox = tracker.update(frame)
 
@@ -85,31 +86,24 @@ while True:
     if success:
         draw_box(frame, bbox, font)
         new_point = get_centre(bbox)
-        magnitude_text = (new_point[0] + 30, new_point[1] - 30)
-        angle_text = (new_point[0] + 30, new_point[1] - 60)
-        velocity_text = (new_point[0] + 30, new_point[1] - 90)
         
         # Draw vector
         v_magnitude, v_angle = calculate_vector(all_points[-1], new_point)
         velocity = v_magnitude/frame_time
         cv2.arrowedLine(frame, all_points[-1], new_point, (255, 0, 0), 2)
 
-        cv2.putText(frame, "Magnitude:" + str(v_magnitude), magnitude_text, font, 0.7, (255, 0, 0), 2)
-        cv2.putText(frame, "Angle:" + str(v_angle), angle_text, font, 0.7, (255, 0, 0), 2)
-        cv2.putText(frame, "Velocity:" + str(velocity), velocity_text, font, 0.7, (255, 0, 0), 2)
+        # cv2.putText(frame, str(v_magnitude), (100, 40), font, 0.7, (255, 0, 0), 2)
+        # cv2.putText(frame, str(v_angle), (100, 75), font, 0.7, (255, 0, 0), 2)
         all_points.append(new_point)
     else:
         # Otherwise update text to indicate object has been lost 
         cv2.putText(frame, "Lost", (100, 75), font, 0.7, (0, 0, 255), 2)
 
     # Draw rectangle to contain status and FPS
-    cv2.rectangle(frame, (15, 15), (200, 90), (255, 0, 255), 2)
-    cv2.putText(frame, "FPS:", (20, 40), font, 0.7, (255, 0, 255), 2)
-    cv2.putText(frame, "Status:", (20, 75), font, 0.7, (255, 0, 255), 2)
-
-    # Calculate FPS and display
-    fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer)
-    cv2.putText(frame, str(int(fps)), (75, 40), font, 0.7, (20, 20, 230), 2)
+    cv2.rectangle(frame, (15, 15), (230, 125), (255, 0, 255), 2)
+    cv2.putText(frame, "Magnitude: " + str(round(v_magnitude, 3)), (20, 40), font, 0.7, (255, 0, 255), 2)
+    cv2.putText(frame, "Angle: " + str(round(v_angle, 3)), (20, 75), font, 0.7, (255, 0, 255), 2)
+    cv2.putText(frame, "Status:", (20, 110), font, 0.7, (255, 0, 255), 2)
 
     # Display result
     cv2.imshow("Result", frame)
