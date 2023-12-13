@@ -56,7 +56,7 @@ while True:
 trackers = cv2.legacy.MultiTracker_create()
 
 # Retrieve video feed
-cap = cv2.VideoCapture("testvid1.mp4")
+cap = cv2.VideoCapture("testmulti.mp4")
 success, frame = cap.read()
 
 # Prompt user to select region of interest
@@ -66,9 +66,13 @@ boxes = cv2.selectROIs("Select regions of interest", frame, fromCenter=False, sh
 # Initialise tracker with chosen regions of interest and add to multi-tracker object
 for box in boxes:
     trackers.add(create_tracker(tracker), frame, box)
+    all_points.append([get_centre(box)])
 
 # Clear windows
 cv2.destroyAllWindows()
+
+# Initialise mask
+draw_mask = np.zeros_like(frame)
 
 # Loop through the remaining frames
 while True:
@@ -79,18 +83,20 @@ while True:
     if frame is None:
         break
     
-    if success:
-        # Update every bounding box in boxes
-        for box in boxes:
-            draw_box(frame, box, font)
-            cv2.putText(frame, "Tracking", (100, 40), font, 0.7, (0, 255, 0), 2)
-    else:
-        # Otherwise update text to indicate object has been lost 
-        cv2.putText(frame, "Lost", (100, 40), font, 0.7, (0, 0, 255), 2)
+    # Update every bounding box in boxes
+    for i in range(len(boxes)):
+        draw_box(frame, boxes[i])
+        new_point = get_centre(boxes[i])
 
-    # Draw rectangle to contain status info
-    cv2.rectangle(frame, (15, 15), (230, 50), (255, 0, 255), 2)
-    cv2.putText(frame, "Status:", (20, 40), font, 0.7, (255, 0, 255), 2)
+        # Draw vector
+        v_magnitude, v_angle = calculate_vector(all_points[i][-1], new_point)
+        cv2.arrowedLine(frame, all_points[i][-1], new_point, (255, 0, 0), 2)
+        draw_mask = cv2.line(draw_mask, all_points[i][-1], new_point, (255, 0, 0), 2)
+
+        cv2.putText(frame, str(i), new_point, font, 0.7, (0, 255, 0), 2)
+        all_points[i].append(new_point)
+    
+    img = cv2.add(frame, draw_mask)
     
     # Read user input
     key = cv2.waitKey(30) & 0xff
@@ -103,10 +109,11 @@ while True:
         # Initialise tracker with chosen region of interest and add to multi-tracker object
         for box in boxes:
             trackers.add(create_tracker(tracker), frame, box)
+            all_points.append([get_centre(box)])
         cv2.destroyAllWindows()
 
     # Display result
-    cv2.imshow("Result", frame)
+    cv2.imshow("Result", img)
     if key == escape_key:
        break
 

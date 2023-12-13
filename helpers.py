@@ -29,7 +29,7 @@ def get_subimage(img, x, y, width, height):
     """
     return img[y:y+height, x:x+width]
 
-def draw_box(frame, bbox, font) -> None:
+def draw_box(frame, bbox) -> None:
     """
     Draw the box specified by the bounding box on the frame, and state that the bbox has been successfully tracked.
 
@@ -39,7 +39,7 @@ def draw_box(frame, bbox, font) -> None:
     """
     x, y, w, h = int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])
     cv2.rectangle(frame, (x, y), ((x + w), (y + h)), (255, 0, 255), 3, 3 )
-    
+
 def get_centre(bbox):
     """
     Calculates and returns the centre coordinates/centroid of a bounding box.
@@ -92,3 +92,4 @@ def create_tracker(tracker_type: str):
         return cv2.legacy.TrackerMOSSE_create()
     else:
         print("Invalid tracker type, tracker could not be created")
+

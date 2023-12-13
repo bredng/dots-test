@@ -4,6 +4,7 @@ Tracks an object by selecting a region of interest with OpenCV trackers
 import cv2
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
 from helpers import *
 
 
@@ -11,6 +12,11 @@ from helpers import *
 font = cv2.FONT_HERSHEY_SIMPLEX
 all_points = []
 escape_key = 27
+
+# Arrays to hold output data
+x_displacement = [0]
+z_displacement = [0]
+time = [0]
 
 # Prompt user to select tracker type
 while True:
@@ -53,7 +59,7 @@ while True:
         print("Invalid input, please select a tracker from 1-7")
 
 # Retrieve video feed
-cap = cv2.VideoCapture("testvid2.mp4")
+cap = cv2.VideoCapture("testvid1.mp4")
 success, frame = cap.read()
 
 # Prompt user to select region of interest
@@ -64,7 +70,10 @@ bbox = cv2.selectROI("Select region of interest", frame, fromCenter=False, showC
 tracker.init(frame, bbox)
 
 # Update all points array with first point
-all_points.append(get_centre(bbox))
+init_centre = get_centre(bbox)
+all_points.append(init_centre)
+init_x = init_centre[0]
+init_z = init_centre[1]
 
 # Clear windows
 cv2.destroyAllWindows()
@@ -84,7 +93,7 @@ while True:
 
     # If object is successfully being tracked, update box as normal
     if success:
-        draw_box(frame, bbox, font)
+        draw_box(frame, bbox)
         new_point = get_centre(bbox)
         
         # Draw vector
@@ -96,7 +105,15 @@ while True:
         cv2.putText(frame, str(round(v_magnitude, 3)), (140, 40), font, 0.7, (255, 0, 0), 2)
         cv2.putText(frame, str(round(v_angle, 3)), (100, 75), font, 0.7, (255, 0, 0), 2)
         cv2.putText(frame, "Tracking", (100, 110), font, 0.7, (0, 255, 0), 2)
+
+        # Update data
         all_points.append(new_point)
+        Dx = init_x - new_point[0]
+        Dz = init_z - new_point[1]
+        new_time = time[-1] + frame_time
+        x_displacement.append(Dx)
+        z_displacement.append(Dz)
+        time.append(new_time)
     else:
         # Otherwise update text to indicate object has been lost 
         cv2.putText(frame, "Lost", (100, 110), font, 0.7, (0, 0, 255), 2)
@@ -113,4 +130,9 @@ while True:
        break
 
 cv2.destroyAllWindows()
+
+# Plotting data
+plt.plot(x_displacement, time)
+plt.show()
+
 sys.exit()
