@@ -9,8 +9,6 @@ from helpers import *
 # Setting parameters
 font = cv2.FONT_HERSHEY_SIMPLEX
 all_points = []
-escape_key = 27
-s_key = 115
 
 # Prompt user to select tracker type
 while True:

@@ -14,10 +14,6 @@ lk_params = dict(winSize = (15, 15),
                  maxLevel = 2,
                  criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.001))
 
-escape_key = 27 # Escape ASCII key
-enter_key = 13 # Enter ASCII key
-
-
 # Retrieve video 
 cap = cv2.VideoCapture("testvid.mp4")
 

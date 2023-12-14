@@ -4,6 +4,12 @@ Helper functions for other scripts
 import cv2
 import numpy as np
 
+""" Useful ASCII keys """
+enter_key = 13
+escape_key = 27
+s_key = 115
+
+
 def calculate_ave_v(x, x0, t):
     """
     Calculate the average velocity based on SUVAT equation. 

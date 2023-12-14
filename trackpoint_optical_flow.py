@@ -4,10 +4,11 @@ Tracks a point of interest using sparse optical flow
 import sys
 import numpy as np
 import cv2
+from helpers import *
 
 
 # Retrieve video
-cap = cv2.VideoCapture("testvid1.mp4")
+cap = cv2.VideoCapture("testvid.mp4")
 
 # Retrieve video's first frame
 succ, frame = cap.read()
@@ -20,14 +21,21 @@ lk_params = dict(winSize=(15, 15), maxLevel=4, criteria=(cv2.TERM_CRITERIA_EPS |
                                                                       cv2.TERM_CRITERIA_COUNT, 10, 0.03))
 
 
-# Function that allows user to set a point of interest
-def select_point(event, x, y, flags, params):
+def select_point(event, x, y, flags, params) -> None:
+    """
+    A callback function that saves the pixel selected by the user upon left mouse click.
+
+    :param event: The input event
+    :param x: The x coordinate of the pixel interacted with when the event occurred
+    :param y: The y coordinate of the pixel interacted with when the event occurred
+    :param flags: Any flags
+    :param params: Any additional parameters
+    """
     global point, selected_point, old_points, clicked
-    # Record coordinates of mouse click
     if event == cv2.EVENT_LBUTTONDOWN:
-        point = (x, y)
+        point = (x, y) # Record coordinates where left mouse click occurred
         selected_point = True
-        old_points = np.array([[x, y]], dtype=np.float32)
+        old_points = np.array([[x, y]], dtype=np.float32) # Save coordinate as the initial coordinate
         clicked = True
 
 # Initialise variables
@@ -36,6 +44,7 @@ point = ()
 old_points = ([[]])
 clicked = False
 
+# Creating window and associating callback function with window
 window_name = "Select a point to track"
 cv2.namedWindow(window_name)
 cv2.setMouseCallback(window_name, select_point)
@@ -44,7 +53,7 @@ cv2.setMouseCallback(window_name, select_point)
 while True:
     cv2.imshow(window_name, frame)
     
-    if clicked or cv2.waitKey(1) & 0xFF == 13:
+    if clicked or cv2.waitKey(1) & 0xFF == escape_key:
         break
 
 cv2.destroyAllWindows()
