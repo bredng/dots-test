@@ -10,10 +10,10 @@ from helpers import *
 
 # Setting parameters
 font = cv2.FONT_HERSHEY_SIMPLEX
-all_points = []
 escape_key = 27
 
 # Arrays to hold output data
+all_points = []
 x_displacement = [0]
 z_displacement = [0]
 time = [0]
@@ -63,9 +63,10 @@ cap = cv2.VideoCapture("testvid1.mp4")
 success, frame = cap.read()
 
 # Prompt user to select region of interest
-cv2.namedWindow("Select region of interest", cv2.WINDOW_NORMAL)
-cv2.resizeWindow("Select region of interest", 960, 540)
-bbox = cv2.selectROI("Select region of interest", frame, fromCenter=False, showCrosshair=False)
+ROI_win_name = "Select region of interest"
+cv2.namedWindow(ROI_win_name, cv2.WINDOW_NORMAL)
+cv2.resizeWindow(ROI_win_name, 960, 540)
+bbox = cv2.selectROI(ROI_win_name, frame, fromCenter=False, showCrosshair=False)
 # Initialise tracker with chosen region of interest
 tracker.init(frame, bbox)
 
@@ -108,7 +109,7 @@ while True:
 
         # Update data
         all_points.append(new_point)
-        Dx = init_x - new_point[0]
+        Dx = new_point[0] - init_x
         Dz = init_z - new_point[1]
         new_time = time[-1] + frame_time
         x_displacement.append(Dx)
@@ -131,8 +132,32 @@ while True:
 
 cv2.destroyAllWindows()
 
-# Plotting data
-plt.plot(x_displacement, time)
+# Creating a figure to visualise data
+fig = plt.figure()
+
+# First subplot: Time vs displacement in the x-direction
+plt.subplot(2, 2, 1)
+plt.plot(time, x_displacement)
+plt.title("Time vs displacement in x-direction")
+plt.xlabel("Time (s)")
+plt.ylabel("Displacement (pixels)")
+
+# Second subplot: Time vs displacement in the z-direction
+plt.subplot(2, 2, 2)
+plt.plot(time, z_displacement)
+plt.title("Time vs displacement in z-direction")
+plt.xlabel("Time (s)")
+plt.ylabel("Displacement (pixels)")
+
+# Third subplot: Path of the tracked object
+plt.subplot(2, 2, (3, 4))
+plt.plot(x_displacement, z_displacement)
+plt.title("Path of the tracked object")
+plt.xlabel("Displacement in the x-direction (pixels)")
+plt.ylabel("Displacement in the y-direction (pixels)")
+
+# Display subplots
 plt.show()
 
+# Exit the program
 sys.exit()

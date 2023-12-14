@@ -1,5 +1,5 @@
 """
-Tracks an object by selecting a point of interest with sparse optical flow
+Tracks a point of interest using sparse optical flow
 """
 import sys
 import numpy as np

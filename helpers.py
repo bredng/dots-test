@@ -16,18 +16,16 @@ def calculate_ave_v(x, x0, t):
     """
     return (x-x0)/t
 
-def get_subimage(img, x, y, width, height):
+def get_subimage(img, bbox):
     """
     Crop a frame and retrieve a subimage of a larger frame.
 
     :param img: The larger frame that is being cropped
-    :param x: The x-coordinate of the top-left point of the cropped image
-    :param y: The y-coordinate of the top-left point of the cropped image
-    :param width: The width of the cropped image
-    :param height: The height of the cropped image
+    :param bbox: The bounding box that is being cropped
     :return: The cropped image
     """
-    return img[y:y+height, x:x+width]
+    x, y, w, h = int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])
+    return img[y:y+h, x:x+w]
 
 def draw_box(frame, bbox) -> None:
     """

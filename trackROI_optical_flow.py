@@ -1,5 +1,5 @@
 """
-Tracks an object by selecting a region of interest with sparse optical flow
+Tracks a point by selecting a region of interest with sparse optical flow
 """
 
 import numpy as np
@@ -8,27 +8,21 @@ import cv2
 from helpers import *
 
 
-# Setting parameters
+# Setting parameters for Lucas-Kanade sparse optical flow
 lk_params = dict(winSize = (15, 15),
                  maxLevel = 2,
                  criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.001))
 
-feature_params = dict(maxCorners = 20, 
-                      qualityLevel = 0.3, 
-                      minDistance = 7, blockSize = 7)
+# Retrieve video 
+cap = cv2.VideoCapture("testmulti.mp4")
 
-# Array to store all the calculated velocities
-velocities = []
-
-# Frame capture
-cap = cv2.VideoCapture("testvid1.mp4")
-
+# Retrieve the first frame of the video
 succ, first_frame = cap.read()
 
 # Prompt user to select region of interest
-x, y, w, h = cv2.selectROI("Select region of interest", first_frame, fromCenter=False, showCrosshair=False)
+bbox = cv2.selectROI("Select region of interest", first_frame, fromCenter=False, showCrosshair=False)
 
-ROI_img = get_subimage(first_frame, x, y, w, h)
+ROI_img = get_subimage(first_frame, bbox)
 
 cv2.imshow("e", ROI_img)
 
