@@ -6,6 +6,7 @@ import sys
 import numpy as np
 from helpers import *
 
+
 # Setting parameters
 font = cv2.FONT_HERSHEY_SIMPLEX
 all_points = []

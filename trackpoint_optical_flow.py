@@ -11,7 +11,7 @@ from helpers import *
 cap = cv2.VideoCapture("testvid.mp4")
 
 # Retrieve video's first frame
-succ, frame = cap.read()
+success, frame = cap.read()
 
 # Convert first frame to grayscale
 previous = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -56,6 +56,7 @@ while True:
     if clicked or cv2.waitKey(1) & 0xFF == escape_key:
         break
 
+# Clear opened windows
 cv2.destroyAllWindows()
 
 # Create blank mask
@@ -63,7 +64,9 @@ canvas = np.zeros_like(frame)
 
 # Loop through remaining frames
 while True:
-    succ, frame = cap.read()
+    # Get next frame
+    success, frame = cap.read()
+    # Convert frame to grayscale
     next = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     if selected_point is True:
@@ -82,9 +85,11 @@ while True:
         # Draw a circle at the new point
         frame = cv2.circle(frame, (int(x), int(y)), 5, (0, 255, 0), -1)
 
+    key = cv2.waitKey(30) & 0xFF
+
     result = cv2.add(frame, canvas)
     cv2.imshow("Result", result)
-    if cv2.waitKey(30) & 0xFF == 13:
+    if key == escape_key:
         break
 
 cv2.destroyAllWindows()
