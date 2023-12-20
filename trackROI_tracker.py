@@ -131,6 +131,7 @@ while True:
 
 cv2.destroyAllWindows()
 
+
 # Creating a figure to visualise data
 fig = plt.figure()
 
@@ -153,7 +154,7 @@ plt.subplot(2, 2, (3, 4))
 plt.plot(x_displacement, z_displacement)
 plt.title("Path of the tracked object")
 plt.xlabel("Displacement in the x-direction (pixels)")
-plt.ylabel("Displacement in the y-direction (pixels)")
+plt.ylabel("Displacement in the z-direction (pixels)")
 
 # Display subplots
 plt.show()
